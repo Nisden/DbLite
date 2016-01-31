@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLite", "DbLite\DbLite.csproj", "{4E188C15-8749-4295-91BB-185B5915B5C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLite.Test", "DbLite.Test\DbLite.Test.csproj", "{387E0FA0-F7DD-44FE-AFC2-AA93C750329B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLite.SQLite", "DbLite.SQLite\DbLite.SQLite.csproj", "{19058386-BCD3-4E6D-A3E5-F73981679D1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E188C15-8749-4295-91BB-185B5915B5C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E188C15-8749-4295-91BB-185B5915B5C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E188C15-8749-4295-91BB-185B5915B5C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E188C15-8749-4295-91BB-185B5915B5C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{387E0FA0-F7DD-44FE-AFC2-AA93C750329B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{387E0FA0-F7DD-44FE-AFC2-AA93C750329B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{387E0FA0-F7DD-44FE-AFC2-AA93C750329B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{387E0FA0-F7DD-44FE-AFC2-AA93C750329B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19058386-BCD3-4E6D-A3E5-F73981679D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19058386-BCD3-4E6D-A3E5-F73981679D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19058386-BCD3-4E6D-A3E5-F73981679D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19058386-BCD3-4E6D-A3E5-F73981679D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
