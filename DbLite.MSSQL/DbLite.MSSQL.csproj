@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4E188C15-8749-4295-91BB-185B5915B5C9}</ProjectGuid>
+    <ProjectGuid>{9890B932-793E-4F7E-9C82-F04C9FF0C9A9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DbLite</RootNamespace>
-    <AssemblyName>DbLite</AssemblyName>
+    <RootNamespace>DbLite.MSSQL</RootNamespace>
+    <AssemblyName>DbLite.MSSQL</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,22 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AliasAttribute.cs" />
-    <Compile Include="DbLiteCommandExtensions.cs" />
-    <Compile Include="DbLiteConnectionExtensions.cs" />
-    <Compile Include="DbLiteDataReaderExtensions.cs" />
-    <Compile Include="DbLiteDialectProvider.cs" />
-    <Compile Include="DbLiteDialectProviderFactory.cs" />
-    <Compile Include="DbLiteModelInfo.cs" />
-    <Compile Include="DbLiteSQLBuilder.cs" />
-    <Compile Include="DialectProviderNotRegisteredException.cs" />
-    <Compile Include="IgnoreAttribute.cs" />
-    <Compile Include="KeyAttribute.cs" />
-    <Compile Include="NoRecordsAffectedException.cs" />
+    <Compile Include="DbLiteMSSQLDialectProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\DbLiteQuery.cs" />
-    <Compile Include="Query\DbLiteQueryProvider.cs" />
-    <Compile Include="Query\DbLiteQueryProviderCommon.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DbLite\DbLite.csproj">
+      <Project>{4e188c15-8749-4295-91bb-185b5915b5c9}</Project>
+      <Name>DbLite</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

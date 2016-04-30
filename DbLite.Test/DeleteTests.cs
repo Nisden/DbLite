@@ -4,8 +4,7 @@
     using System.Data;
     using Xunit;
 
-    [Collection("Database Collection")]
-    public abstract class DeleteTests<TDatabaseFixture, TConnection> : IClassFixture<TDatabaseFixture>
+    public abstract class DeleteTests<TDatabaseFixture, TConnection>
         where TDatabaseFixture : DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
@@ -26,12 +25,15 @@
         [Fact]
         public void DeleteRecord()
         {
-            using (Fixture.Db.BeginTransaction())
+            using (new System.Transactions.TransactionScope())
             {
-                var record = Fixture.Db.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 });
-                Fixture.Db.Delete(record);
+                using (var connection = Fixture.Open())
+                {
+                    var record = connection.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 });
+                    connection.Delete(record);
 
-                Assert.Null(Fixture.Db.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 }));
+                    Assert.Null(connection.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 }));
+                }
             }
         }
     }

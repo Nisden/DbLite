@@ -7,6 +7,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    [Xunit.Collection("SQLite")]
     public class SQLiteUpdateTests : UpdateTests<SQLiteDatabaseFixture, SQLiteConnection>
     {
         public SQLiteUpdateTests(SQLiteDatabaseFixture fixture) : base(fixture)

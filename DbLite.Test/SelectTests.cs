@@ -4,8 +4,7 @@
     using Tables;
     using Xunit;
 
-    [Collection("Database Collection")]
-    public abstract class SelectTests<TDatabaseFixture, TConnection> : IClassFixture<TDatabaseFixture>
+    public abstract class SelectTests<TDatabaseFixture, TConnection>
         where TDatabaseFixture : DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
@@ -26,43 +25,61 @@
         [Fact]
         public void SelectAll()
         {
-            var all = Fixture.Db.Select<SimpleTable>(null, null);
-            Assert.Equal(100, all.Count);
+            using (var connection = Fixture.Open())
+            {
+                var all = connection.Select<SimpleTable>(null, null);
+                Assert.Equal(100, all.Count);
+            }
         }
 
         [Fact]
         public void SelectWhereNoPrefix()
         {
-            var some = Fixture.Db.Select<SimpleTable>("Interger1 <= 50", null);
-            Assert.NotEmpty(some);
+            using (var connection = Fixture.Open())
+            {
+                var some = connection.Select<SimpleTable>("Interger1 <= 50", null);
+                Assert.NotEmpty(some);
+            }
         }
 
         [Fact]
         public void SelectWhereNoPrefixWithParamater()
         {
-            var some = Fixture.Db.Select<SimpleTable>("Interger1 <= @LessThan", new { LessThan = 50 });
-            Assert.NotEmpty(some);
+            using (var connection = Fixture.Open())
+            {
+                var some = connection.Select<SimpleTable>("Interger1 <= @LessThan", new { LessThan = 50 });
+                Assert.NotEmpty(some);
+            }
         }
 
         [Fact]
         public void SelectWhereWithPrefix()
         {
-            var some = Fixture.Db.Select<SimpleTable>("where Interger1 <= 50", null);
-            Assert.NotEmpty(some);
+            using (var connection = Fixture.Open())
+            {
+                var some = connection.Select<SimpleTable>("where Interger1 <= 50", null);
+                Assert.NotEmpty(some);
+            }
         }
 
         [Fact]
         public void SelectWithFrom()
         {
-            var some = Fixture.Db.Select<SimpleTable>("from SimpleTable where Interger1 <= 50", null);
-            Assert.NotEmpty(some);
+            using (var connection = Fixture.Open())
+            {
+                var some = connection.Select<SimpleTable>("from SimpleTable where Interger1 <= 50", null);
+                Assert.NotEmpty(some);
+            }
         }
 
         [Fact]
         public void SelectFull()
         {
-            var some = Fixture.Db.Select<SimpleTable>("SELECT * FROM SimpleTable", null);
-            Assert.NotEmpty(some);
+            using (var connection = Fixture.Open())
+            {
+                var some = connection.Select<SimpleTable>("SELECT * FROM SimpleTable", null);
+                Assert.NotEmpty(some);
+            }
         }
     }
 }

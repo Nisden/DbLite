@@ -8,32 +8,16 @@
     using System.Threading.Tasks;
     using Xunit;
 
-    public abstract class DatabaseFixture<TConnection> : IDisposable
+    public abstract class DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
-        private readonly Lazy<TConnection> db;
-        public TConnection Db
-        {
-            get
-            {
-                return db.Value;
-            }
-        }
-
         public DatabaseFixture()
         {
-            db = new Lazy<TConnection>(Open);
             SetupDatabase();
         }
 
         protected abstract void SetupDatabase();
 
-        protected abstract TConnection Open();
-
-        public void Dispose()
-        {
-            if (db.IsValueCreated)
-                db.Value.Dispose();
-        }
+        public abstract TConnection Open();
     }
 }

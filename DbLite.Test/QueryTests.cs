@@ -5,8 +5,7 @@
     using Tables;
     using Xunit;
 
-    [Collection("Database Collection")]
-    public abstract class QueryTests<TDatabaseFixture, TConnection> : IClassFixture<TDatabaseFixture>
+    public abstract class QueryTests<TDatabaseFixture, TConnection>
         where TDatabaseFixture : DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
@@ -27,7 +26,10 @@
         [Fact(Skip = "Expression build not implemented yet")]
         public void QuerySimpleTableAll()
         {
-            Assert.NotEmpty(fixture.Db.Query<SimpleTable>().Where(x => x.String1 == "Test1"));
+            using (var connection = Fixture.Open())
+            {
+                Assert.NotEmpty(connection.Query<SimpleTable>().Where(x => x.String1 == "Test1"));
+            }
         }
     }
 }

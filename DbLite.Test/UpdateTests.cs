@@ -5,8 +5,7 @@
     using Tables;
     using Xunit;
 
-    [Collection("Database Collection")]
-    public abstract class UpdateTests<TDatabaseFixture, TConnection> : IClassFixture<TDatabaseFixture>
+    public abstract class UpdateTests<TDatabaseFixture, TConnection>
         where TDatabaseFixture : DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
@@ -27,33 +26,39 @@
         [Fact]
         public void DoUpdate()
         {
-            using (this.Fixture.Db.BeginTransaction())
+            using (new System.Transactions.TransactionScope())
             {
-                var record = this.Fixture.Db.Single<SimpleTable>("Interger1 = @Id", new { Id = 5 });
-                Assert.NotNull(record);
+                using (var connection = Fixture.Open())
+                {
+                    var record = connection.Single<SimpleTable>("Interger1 = @Id", new { Id = 5 });
+                    Assert.NotNull(record);
 
-                // Change record
-                record.String1 = "Nick";
-                record.String2 = "Ninja";
+                    // Change record
+                    record.String1 = "Nick";
+                    record.String2 = "Ninja";
 
-                this.Fixture.Db.Update(record);
+                    connection.Update(record);
 
-                // Check the record has changed
-                Assert.NotEmpty(this.Fixture.Db.Select<SimpleTable>("String1 = @Str1 AND String2 = @Str2", new { Str1 = "Nick", Str2 = "Ninja" }));
+                    // Check the record has changed
+                    Assert.NotEmpty(connection.Select<SimpleTable>("String1 = @Str1 AND String2 = @Str2", new { Str1 = "Nick", Str2 = "Ninja" }));
+                }
             }
         }
 
         [Fact]
         public void UpdateMultiKey()
         {
-            using (this.Fixture.Db.BeginTransaction())
+            using (new System.Transactions.TransactionScope())
             {
-                this.Fixture.Db.Update(new MultiKeyTable()
+                using (var connection = Fixture.Open())
                 {
-                    Id1 = 1,
-                    Id2 = "Hello",
-                    Value = "My name is now ninja!"
-                });
+                    connection.Update(new MultiKeyTable()
+                    {
+                        Id1 = 1,
+                        Id2 = "Hello",
+                        Value = "My name is now ninja!"
+                    });
+                }
             }
         }
     }

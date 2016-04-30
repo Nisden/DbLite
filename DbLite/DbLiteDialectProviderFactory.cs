@@ -12,9 +12,10 @@
         static DbLiteDialectProviderFactory()
         {
             // A list of the Official DbLite Providers
-            KeyValuePair<string, string>[] officialProviders = new KeyValuePair<string, string>[] 
+            Dictionary<string, string> officialProviders = new Dictionary<string, string> 
             {
-                new KeyValuePair<string, string>("System.Data.SQLite.SQLiteConnection", "DbLite.SQLite.DbLiteSQLiteDialectProvider, DbLite.SQLite")
+                 { "System.Data.SQLite.SQLiteConnection", "DbLite.SQLite.DbLiteSQLiteDialectProvider, DbLite.SQLite" },
+                 { "System.Data.SqlClient.SqlConnection", "DbLite.MSSQL.DbLiteMSSQLDialectProvider, DbLite.MSSQL" }
             };
 
             // Auto Registration of Provider Types

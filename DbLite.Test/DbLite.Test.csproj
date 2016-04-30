@@ -40,6 +40,7 @@
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net451\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -71,6 +72,13 @@
     <Compile Include="QueryTests.cs" />
     <Compile Include="ReadmeTests.cs" />
     <Compile Include="SelectTests.cs" />
+    <Compile Include="MSSQL\MSSQLDatabaseFixture.cs" />
+    <Compile Include="MSSQL\MSSQLDataReaderTests.cs" />
+    <Compile Include="MSSQL\MSSQLDeleteTests.cs" />
+    <Compile Include="MSSQL\MSSQLQueryTests.cs" />
+    <Compile Include="MSSQL\MSSQLReadmeTests.cs" />
+    <Compile Include="MSSQL\MSSQLSelectTests.cs" />
+    <Compile Include="MSSQL\MSSQLUpdateTests.cs" />
     <Compile Include="SQLLite\SQLiteDatabaseFixture.cs" />
     <Compile Include="SQLLite\SQLiteDataReaderTests.cs" />
     <Compile Include="SQLLite\SQLiteDeleteTests.cs" />
@@ -86,6 +94,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbLite.MSSQL\DbLite.MSSQL.csproj">
+      <Project>{9890b932-793e-4f7e-9c82-f04c9ff0c9a9}</Project>
+      <Name>DbLite.MSSQL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLite.SQLite\DbLite.SQLite.csproj">
       <Project>{19058386-bcd3-4e6d-a3e5-f73981679d1d}</Project>
       <Name>DbLite.SQLite</Name>

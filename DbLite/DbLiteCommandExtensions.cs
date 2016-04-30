@@ -54,7 +54,7 @@
             if (command == null)
                 throw new ArgumentNullException(nameof(command));
 
-            string parameterName = "@p" + command.Parameters.Count + 1;
+            string parameterName = "@p" + (command.Parameters.Count + 1);
             return command.CreateParameter(parameterName, value);
         }
 
@@ -88,7 +88,6 @@
             }
             else
             {
-                parameter.DbType = DbType.Object;
                 parameter.Value = DBNull.Value;
             }
 

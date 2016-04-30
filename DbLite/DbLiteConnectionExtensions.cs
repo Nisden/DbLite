@@ -177,5 +177,25 @@
         }
 
         #endregion
+
+        #region Transaction
+
+        /// <summary>
+        /// Begins an tranasaction that DbLite automaticly uses.
+        /// </summary>
+        public static IDbTransaction OpenTransaction(this IDbConnection connection)
+        {
+            return connection.BeginTransaction();
+        }
+
+        /// <summary>
+        /// Begins an tranasaction that DbLite automaticly uses.
+        /// </summary>
+        public static IDbTransaction OpenTransaction(this IDbConnection connection, IsolationLevel isolationLevel)
+        {
+            return connection.BeginTransaction(isolationLevel);
+        }
+
+        #endregion
     }
 }

@@ -5,8 +5,7 @@
     using System.Data;
     using Xunit;
 
-    [Collection("Database Collection")]
-    public abstract class DataReaderTests<TDatabaseFixture, TConnection> : IClassFixture<TDatabaseFixture>
+    public abstract class DataReaderTests<TDatabaseFixture, TConnection>
         where TDatabaseFixture : DatabaseFixture<TConnection>
         where TConnection : IDbConnection
     {
@@ -27,23 +26,26 @@
         [Fact]
         public void Read_SimpleTable()
         {
-            using (var command = fixture.Db.CreateCommand())
+            using (var connection = Fixture.Open())
             {
-                command.CommandText = "SELECT * FROM SimpleTable";
-
-                List<SimpleTable> result;
-                using (var dataReader = command.ExecuteReader())
+                using (var command = connection.CreateCommand())
                 {
-                    result = dataReader.ToList<SimpleTable>();
-                }
+                    command.CommandText = "SELECT * FROM SimpleTable";
 
-                Assert.Equal(100, result.Count);
+                    List<SimpleTable> result;
+                    using (var dataReader = command.ExecuteReader())
+                    {
+                        result = dataReader.ToList<SimpleTable>();
+                    }
 
-                foreach (var item in result)
-                {
-                    Assert.NotEmpty(item.String1);
-                    Assert.NotEmpty(item.String2);
-                    Assert.InRange(item.Interger1, 5, 500);
+                    Assert.Equal(100, result.Count);
+
+                    foreach (var item in result)
+                    {
+                        Assert.NotEmpty(item.String1);
+                        Assert.NotEmpty(item.String2);
+                        Assert.InRange(item.Interger1, 5, 500);
+                    }
                 }
             }
         }
