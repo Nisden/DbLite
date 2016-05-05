@@ -2,7 +2,7 @@
 
 A simple micro ORM
 
-# Sample
+## Sample
 
 ```csharp
 // Start a transaction
@@ -30,11 +30,32 @@ using (new System.Transactions.TransactionScope())
 }
 ```
 
-# Notes
+## Notes
 
 * Everything is parameterized, no inline variables
 * Currently there is only a dialect providers for SQLite and MSSQL
 * Test coverage is spotty at best
+
+# DbLite.Replication
+
+A crazy idea for ``Master <-> Master`` replication
+
+## Concept
+
+Required Columns
+
+ * Deleted
+ * Timestamp
+ * Source
+
+Fetch all from sync source every couple of seconds
+	(Source = InstanceName & Timestamp > LastTimeStamp)
+
+We might wanna limit our intake by doing the following
+	TOP 5000, ORDER BY Timestamp ASC
+
+Deleting
+	Clean up the database for reconds marked as Deleted every 24 hours
 
 # Requirements
 
