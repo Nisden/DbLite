@@ -34,7 +34,9 @@
                 return sql;
 
             // Add missing WHERE if required
-            if (!sql.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase) && !sql.StartsWith("FROM", StringComparison.OrdinalIgnoreCase))
+            if (!sql.StartsWith("ORDER", StringComparison.OrdinalIgnoreCase) && 
+                !sql.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase) && 
+                !sql.StartsWith("FROM", StringComparison.OrdinalIgnoreCase))
             {
                 if (!string.IsNullOrWhiteSpace(sql))
                 {
@@ -43,7 +45,7 @@
             }
 
             // Add missing FROM if required
-            if (string.IsNullOrWhiteSpace(sql) || sql.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(sql) || sql.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase) || sql.StartsWith("ORDER", StringComparison.OrdinalIgnoreCase))
             {
                 sql = $"FROM {dialectProvider.EscapeTable(modelInfo.Name)}" + Environment.NewLine + sql;
             }

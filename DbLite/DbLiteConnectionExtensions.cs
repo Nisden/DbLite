@@ -69,6 +69,12 @@
 
         #region Select / Single
 
+        public static List<TModel> Select<TModel>(this IDbConnection connection, string sql)
+            where TModel : class, new()
+        {
+            return connection.Select<TModel>(sql, null);
+        }
+
         public static List<TModel> Select<TModel>(this IDbConnection connection, string sql, object parameters)
             where TModel : class, new()
         {

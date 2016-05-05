@@ -57,7 +57,7 @@
         {
             using (var connection = Fixture.Open())
             {
-                var some = connection.Select<SimpleTable>("where Interger1 <= 50", null);
+                var some = connection.Select<SimpleTable>("where Interger1 <= 50");
                 Assert.NotEmpty(some);
             }
         }
@@ -67,7 +67,7 @@
         {
             using (var connection = Fixture.Open())
             {
-                var some = connection.Select<SimpleTable>("from SimpleTable where Interger1 <= 50", null);
+                var some = connection.Select<SimpleTable>("from SimpleTable where Interger1 <= 50");
                 Assert.NotEmpty(some);
             }
         }
@@ -77,8 +77,17 @@
         {
             using (var connection = Fixture.Open())
             {
-                var some = connection.Select<SimpleTable>("SELECT * FROM SimpleTable", null);
+                var some = connection.Select<SimpleTable>("SELECT * FROM SimpleTable");
                 Assert.NotEmpty(some);
+            }
+        }
+
+        [Fact]
+        public void SelectOrderBy()
+        {
+            using (var connection = Fixture.Open())
+            {
+                connection.Select<SimpleTable>("ORDER BY [Interger1]");
             }
         }
     }
