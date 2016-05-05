@@ -98,6 +98,10 @@
       <Project>{9890b932-793e-4f7e-9c82-f04c9ff0c9a9}</Project>
       <Name>DbLite.MSSQL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DbLite.Replication\DbLite.Replication.csproj">
+      <Project>{e26a7336-f8e9-45d0-af50-1b9db30b3a28}</Project>
+      <Name>DbLite.Replication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLite.SQLite\DbLite.SQLite.csproj">
       <Project>{19058386-bcd3-4e6d-a3e5-f73981679d1d}</Project>
       <Name>DbLite.SQLite</Name>

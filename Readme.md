@@ -57,6 +57,9 @@ We might wanna limit our intake by doing the following
 Deleting
 	Clean up the database for reconds marked as Deleted every 24 hours
 
+Locate instances, either automaticly or by configuration
+
+
 # Requirements
 
 * Visual Studio 2015 or newer
