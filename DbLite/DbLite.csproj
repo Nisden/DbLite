@@ -42,10 +42,12 @@
   <ItemGroup>
     <Compile Include="AliasAttribute.cs" />
     <Compile Include="DbLiteCommandExtensions.cs" />
+    <Compile Include="DbLiteConfiguration.cs" />
     <Compile Include="DbLiteConnectionExtensions.cs" />
     <Compile Include="DbLiteDataReaderExtensions.cs" />
     <Compile Include="DbLiteDialectProvider.cs" />
     <Compile Include="DbLiteDialectProviderFactory.cs" />
+    <Compile Include="DbLiteExecutionEventArgs.cs" />
     <Compile Include="DbLiteModelInfo.cs" />
     <Compile Include="DbLiteSQLBuilder.cs" />
     <Compile Include="DialectProviderNotRegisteredException.cs" />

@@ -87,6 +87,12 @@
                     command.CreateParametersFromObject(parameters);
                 }
 
+                DbLiteConfiguration.OnBeforeSelect(connection, new DbLiteExecutionEventArgs()
+                {
+                    Connection = connection,
+                    Command = command
+                });
+
                 using (var reader = command.ExecuteReader())
                 {
                     return reader.ToList<TModel>();
