@@ -65,10 +65,13 @@
 
         public bool Key { get; private set; }
 
+        public bool AutoIncrementing { get; private set; }
+
         public DbLiteModelInfoColumn(PropertyInfo property)
         {
             Name = property.GetCustomAttribute<AliasAttribute>()?.Name ?? property.Name;
             Key = property.GetCustomAttribute<KeyAttribute>() != null;
+            AutoIncrementing = property.GetCustomAttribute<AutoIncrementAttribute>() != null;
             Property = property;
         }
 

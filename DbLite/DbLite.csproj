@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliasAttribute.cs" />
+    <Compile Include="AutoIncrementAttribute.cs" />
     <Compile Include="DbLiteCommandExtensions.cs" />
     <Compile Include="DbLiteConfiguration.cs" />
     <Compile Include="DbLiteConnectionExtensions.cs" />

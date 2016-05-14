@@ -8,7 +8,7 @@
 
     public class AutoIncrementingTable
     {
-        [Key]
+        [Key, AutoIncrement]
         public int Id { get; set; }
 
         public string Value { get; set; }

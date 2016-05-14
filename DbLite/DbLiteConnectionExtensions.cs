@@ -33,16 +33,18 @@
             {
                 using (var command = connection.CreateCommand())
                 {
+                    var columns = modelInfo.Columns.Values.Where(x => !x.AutoIncrementing);
+
                     // Create the top part of our insert statement
                     command.CommandText = $"INSERT INTO {dialectProvider.EscapeTable(modelInfo.Name)} (";
-                    command.CommandText += string.Join(", ", modelInfo.Columns.Select(x => dialectProvider.EscapeColumn(x.Key)));
+                    command.CommandText += string.Join(", ", columns.Select(x => dialectProvider.EscapeColumn(x.Name)));
                     command.CommandText += ") VALUES ";
 
                     // Create the value lines
                     var valueLines = items.Select(item =>
                     {
                         // Create a parameter for each column, the CreateParameterWithName also sets the correct value for the parameter
-                        var parametersForLine = modelInfo.Columns.Values.Select(column => command.CreateParameterWithName(column.GetValue(item))).ToArray();
+                        var parametersForLine = columns.Select(column => command.CreateParameterWithName(column.GetValue(item))).ToArray();
 
                         // Now build the line of "values"
                         return "(" + string.Join(", ", parametersForLine.Select(x => x.ParameterName)) + ")";
