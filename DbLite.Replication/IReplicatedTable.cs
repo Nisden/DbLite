@@ -12,6 +12,6 @@
 
         string Source { get; set; }
 
-        TimeSpan LastUpdated { get; set; }
+        DateTime LastUpdated { get; set; }
     }
 }
