@@ -18,6 +18,14 @@
             }
         }
 
+        public override string RetriveLastIdentity
+        {
+            get
+            {
+                return "SELECT SCOPE_IDENTITY()";
+            }
+        }
+
         public override DbLiteQueryProvider CreateQueryProvider(IDbConnection connection)
         {
             if (connection == null)

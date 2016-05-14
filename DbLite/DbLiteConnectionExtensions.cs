@@ -24,7 +24,8 @@
 
         #region Insert
 
-        public static void Insert<TModel>(this IDbConnection connection, params TModel[] items)
+        /// <returns>-1 if more than one items is inserted or the model does not have a AutoIncrement column, otherwise the last inserted id.</returns>
+        public static long Insert<TModel>(this IDbConnection connection, params TModel[] items)
         {
             DbLiteDialectProvider dialectProvider = DbLiteDialectProviderFactory.GetProvider(connection);
             DbLiteModelInfo modelInfo = DbLiteModelInfo<TModel>.Instance;
@@ -53,17 +54,32 @@
                     // Combine all the value lines and append it to the command
                     command.CommandText += string.Join(", ", valueLines);
 
+                    // Get identity
+                    command.CommandText += Environment.NewLine;
+                    command.CommandText += dialectProvider.RetriveLastIdentity;
+
                     // Command is all ready and loaded now, lets go ahead and call it
-                    command.ExecuteNonQuery();
+                    if (items.Length > 1 || !modelInfo.HasAutoIncrement)
+                    {
+                        command.ExecuteNonQuery();
+                        return -1;
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(command.ExecuteScalar());
+                    }
                 }
             }
             else
             {
                 // Fallback if the provider don't support multiple values in a single insert
+                long identity = -1;
                 foreach (var item in items)
                 {
-                    connection.Insert(item);
+                    identity = connection.Insert(item);
                 }
+
+                return identity;
             }
         }
 
@@ -119,6 +135,7 @@
         /// <param name="connection">Database connection</param>
         /// <param name="item">Item to be updated in the database</param>
         /// <exception cref="InvalidOperationException">If no columns on the <see cref="item"/> has the <see cref="KeyAttribute"/></exception>
+        /// <exception cref="NoRecordsAffectException">If the update affected not rows</exception>
         public static void Update<TModel>(this IDbConnection connection, TModel item)
         {
             if (connection == null)
@@ -134,13 +151,15 @@
             if (!modelInfo.Columns.Values.Any(column => column.Key))
                 throw new InvalidOperationException("No column has the KeyAttribute, atleast one column must have a KeyAttribute to use the Update method");
 
+            var columns = modelInfo.Columns.Values.Where(x => !x.AutoIncrementing);
+
             using (var command = connection.CreateCommand())
             {
                 command.CreateParametersFromObject(item);
 
                 command.CommandText = "UPDATE " + dialectProvider.EscapeColumn(modelInfo.Name);
                 command.CommandText += " SET ";
-                command.CommandText += string.Join(", ", modelInfo.Columns.Keys.Select(columnName => dialectProvider.EscapeColumn(columnName) + " = @" + columnName));
+                command.CommandText += string.Join(", ", columns.Select(column => dialectProvider.EscapeColumn(column.Name) + " = @" + column.Name));
                 command.CommandText += " WHERE " + string.Join(" AND ", modelInfo.Columns.Values.Where(column => column.Key).Select(column => dialectProvider.EscapeColumn(column.Name) + " = @" + column.Name));
 
                 DbLiteConfiguration.OnBeforeUpdate(connection, new DbLiteExecutionEventArgs()

@@ -16,6 +16,11 @@
             get;
         }
 
+        public abstract string RetriveLastIdentity
+        {
+            get;
+        }
+
         public DbLiteDialectProvider()
         {
 

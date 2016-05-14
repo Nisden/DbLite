@@ -79,5 +79,25 @@
                 }
             }
         }
+
+        [Fact]
+        public void UpdateAutoIncrement()
+        {
+            using (new System.Transactions.TransactionScope())
+            {
+                using (var connection = Fixture.Open())
+                {
+                    var autoIncrement = new AutoIncrementingTable()
+                    {
+                        Value = "LALALA"
+                    };
+                    autoIncrement.Id = connection.Insert(autoIncrement);
+
+                    var records = connection.Select<AutoIncrementingTable>("");
+
+                    connection.Update(autoIncrement);
+                }
+            }
+        }
     }
 }
