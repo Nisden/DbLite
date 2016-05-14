@@ -37,7 +37,16 @@
                     record.String1 = "Nick";
                     record.String2 = "Ninja";
 
+                    bool eventInvoked = false;
+                    DbLiteConfiguration.BeforeUpdate += (ss, ee) =>
+                    {
+                        eventInvoked = true;
+                    };
+
                     connection.Update(record);
+
+                    // Check that the before update event was triggered
+                    Assert.True(eventInvoked, "BeforeUpdate was not hit");
 
                     // Check the record has changed
                     Assert.NotEmpty(connection.Select<SimpleTable>("String1 = @Str1 AND String2 = @Str2", new { Str1 = "Nick", Str2 = "Ninja" }));
@@ -52,12 +61,21 @@
             {
                 using (var connection = Fixture.Open())
                 {
+                    bool eventInvoked = false;
+                    DbLiteConfiguration.BeforeUpdate += (ss, ee) =>
+                    {
+                        eventInvoked = true;
+                    };
+
                     connection.Update(new MultiKeyTable()
                     {
                         Id1 = 1,
                         Id2 = "Hello",
                         Value = "My name is now ninja!"
                     });
+
+                    // Check that the before update event was triggered
+                    Assert.True(eventInvoked, "BeforeUpdate was not hit");
                 }
             }
         }

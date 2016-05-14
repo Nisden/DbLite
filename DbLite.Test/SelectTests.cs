@@ -27,8 +27,16 @@
         {
             using (var connection = Fixture.Open())
             {
+                bool eventInvoke = false;
+                DbLiteConfiguration.BeforeSelect += (ss, ee) =>
+                {
+                    eventInvoke = true;
+                };
+
                 var all = connection.Select<SimpleTable>(null, null);
+
                 Assert.Equal(100, all.Count);
+                Assert.True(eventInvoke, "BeforeSelect was not invoked");
             }
         }
 
@@ -37,8 +45,16 @@
         {
             using (var connection = Fixture.Open())
             {
+                bool eventInvoke = false;
+                DbLiteConfiguration.BeforeSelect += (ss, ee) =>
+                {
+                    eventInvoke = true;
+                };
+
                 var some = connection.Select<SimpleTable>("Interger1 <= 50", null);
+
                 Assert.NotEmpty(some);
+                Assert.True(eventInvoke, "BeforeSelect was not invoked");
             }
         }
 

@@ -141,6 +141,12 @@
                 command.CommandText += string.Join(", ", modelInfo.Columns.Keys.Select(columnName => dialectProvider.EscapeColumn(columnName) + " = @" + columnName));
                 command.CommandText += " WHERE " + string.Join(" AND ", modelInfo.Columns.Values.Where(column => column.Key).Select(column => dialectProvider.EscapeColumn(column.Name) + " = @" + column.Name));
 
+                DbLiteConfiguration.OnBeforeUpdate(connection, new DbLiteExecutionEventArgs()
+                {
+                    Command = command,
+                    Connection = connection
+                });
+
                 if (command.ExecuteNonQuery() == 0)
                     throw new NoRecordsAffectException();
             }
@@ -171,6 +177,12 @@
 
                 command.CommandText = "DELETE FROM " + dialectProvider.EscapeColumn(modelInfo.Name);
                 command.CommandText += " WHERE " + string.Join(" AND ", modelInfo.Columns.Values.Where(column => column.Key).Select(column => dialectProvider.EscapeColumn(column.Name) + " = @" + column.Name));
+
+                DbLiteConfiguration.OnBeforeDelete(connection, new DbLiteExecutionEventArgs()
+                {
+                    Command = command,
+                    Connection = connection
+                });
 
                 if (command.ExecuteNonQuery() == 0)
                     throw new NoRecordsAffectException();
