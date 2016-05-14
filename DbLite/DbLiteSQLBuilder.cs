@@ -53,7 +53,7 @@
             // Add missing select if required
             if (sql.StartsWith("FROM", StringComparison.OrdinalIgnoreCase))
             {
-                sql = "SELECT " + string.Join(", ", modelInfo.Columns.Select(x => dialectProvider.EscapeColumn(x.Key))) + Environment.NewLine + sql;
+                sql = "SELECT " + string.Join(", ", modelInfo.Columns.Select(x => dialectProvider.EscapeColumn(x.Value.Name))) + Environment.NewLine + sql;
             }
 
             return sql;

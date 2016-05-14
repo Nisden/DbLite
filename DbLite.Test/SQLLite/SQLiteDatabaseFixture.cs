@@ -30,7 +30,7 @@ namespace DbLite.Test.SQLLite
                 {
                     command.CommandText = @"CREATE TABLE SimpleTable (
                                         String1 NVARCHAR,
-                                        String2 NVARCHAR,
+                                        String22 NVARCHAR,
                                         Boolean1 BIT,
                                         Interger1 INT,
                                         Decimal1 DECIMAL)";

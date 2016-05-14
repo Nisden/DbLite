@@ -52,7 +52,7 @@
                     continue;
 
                 var columnInfo = new DbLiteModelInfoColumn(property);
-                columns.Add(columnInfo.Name, columnInfo);
+                columns.Add(property.Name, columnInfo);
             }
 
             // Change dictionary to read only

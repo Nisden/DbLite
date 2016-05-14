@@ -10,6 +10,7 @@
     {
         public string String1 { get; set; }
 
+        [Alias("String22")]
         public string String2 { get; set; }
 
         public bool Boolean1 { get; set; }

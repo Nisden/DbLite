@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Reflection;
+    using System.Linq;
 
     public static class DbLiteDataReaderExtensions
     {
@@ -37,7 +38,7 @@
                 {
                     // Loop each column, and find a property with a matching name
                     DbLiteModelInfoColumn columnInfo;
-                    if (modelInfo.Columns.TryGetValue(reader.GetName(c), out columnInfo))
+                    if ((columnInfo = modelInfo.Columns.SingleOrDefault(x => x.Value.Name == reader.GetName(c)).Value) != null)
                     {
                         propertyCache.Add(c, columnInfo.Property);
                     }

@@ -49,7 +49,7 @@
                     Assert.True(eventInvoked, "BeforeUpdate was not hit");
 
                     // Check the record has changed
-                    Assert.NotEmpty(connection.Select<SimpleTable>("String1 = @Str1 AND String2 = @Str2", new { Str1 = "Nick", Str2 = "Ninja" }));
+                    Assert.NotEmpty(connection.Select<SimpleTable>("String1 = @Str1 AND String22 = @Str2", new { Str1 = "Nick", Str2 = "Ninja" }));
                 }
             }
         }

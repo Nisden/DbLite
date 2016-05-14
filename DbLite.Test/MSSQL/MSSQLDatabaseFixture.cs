@@ -53,7 +53,7 @@ namespace DbLite.Test.MSSQL
                 {
                     command.CommandText = @"CREATE TABLE SimpleTable (
                                         String1 NVARCHAR(MAX),
-                                        String2 NVARCHAR(MAX),
+                                        String22 NVARCHAR(MAX),
                                         Boolean1 BIT,
                                         Interger1 INT,
                                         Decimal1 DECIMAL)";

@@ -24,8 +24,9 @@
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
-            var properties = parameters.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var property in properties)
+            var modelInfo = new DbLiteModelInfo(parameters.GetType());
+
+            foreach (var property in modelInfo.Columns.Values)
             {
                 command.CreateParameter(property.Name, property.GetValue(parameters));
             }
