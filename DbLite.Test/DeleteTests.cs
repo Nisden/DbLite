@@ -29,10 +29,14 @@
             {
                 using (var connection = Fixture.Open())
                 {
+                    bool eventInvoked = false;
+                    DbLiteConfiguration.BeforeDelete += (ss, ee) => eventInvoked = true;
+
                     var record = connection.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 });
                     connection.Delete(record);
 
                     Assert.Null(connection.Single<SimpleTable>("Interger1 = @Id", new { Id = 20 }));
+                    Assert.True(eventInvoked, "BeforeDelete was not invoked");
                 }
             }
         }

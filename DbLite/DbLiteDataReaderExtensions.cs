@@ -9,18 +9,18 @@
     {
         #region Read - Read single elements
 
-        public static TModel Read<TModel>(this IDataReader reader, Dictionary<int, MethodInfo> propertyCache)
+        public static TModel Read<TModel>(this IDataReader reader, Dictionary<int, PropertyInfo> propertyCache)
             where TModel : class, new()
         {
             return (TModel)Read(reader, typeof(TModel), DbLiteModelInfo<TModel>.Instance, propertyCache);
         }
 
-        public static object Read(this IDataReader reader, Type type, Dictionary<int, MethodInfo> propertyCache)
+        public static object Read(this IDataReader reader, Type type, Dictionary<int, PropertyInfo> propertyCache)
         {
             return Read(reader, type, new DbLiteModelInfo(type), propertyCache);
         }
 
-        private static object Read(IDataReader reader, Type type, DbLiteModelInfo modelInfo, Dictionary<int, MethodInfo> propertyCache)
+        private static object Read(IDataReader reader, Type type, DbLiteModelInfo modelInfo, Dictionary<int, PropertyInfo> propertyCache)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
@@ -39,7 +39,7 @@
                     DbLiteModelInfoColumn columnInfo;
                     if (modelInfo.Columns.TryGetValue(reader.GetName(c), out columnInfo))
                     {
-                        propertyCache.Add(c, columnInfo.Property.SetMethod);
+                        propertyCache.Add(c, columnInfo.Property);
                     }
                 }
             }
@@ -54,7 +54,10 @@
                 if (value is DBNull)
                     value = null;
 
-                columnInfo.Value.Invoke(obj, new object[] { value });
+                if (value == null && columnInfo.Value.PropertyType.IsValueType)
+                    throw new InvalidCastException($"Unable to set {columnInfo.Value.PropertyType.Name} to null");
+
+                columnInfo.Value.SetValue(obj, value);
             }
 
             return obj;
@@ -69,7 +72,7 @@
         {
             List<TModel> results = new List<TModel>();
 
-            Dictionary<int, MethodInfo> propertyCache = new Dictionary<int, MethodInfo>();
+            Dictionary<int, PropertyInfo> propertyCache = new Dictionary<int, PropertyInfo>();
             while (reader.Read())
             {
                 results.Add(reader.Read<TModel>(propertyCache));
@@ -82,7 +85,7 @@
         {
             List<object> results = new List<object>();
 
-            Dictionary<int, MethodInfo> propertyCache = new Dictionary<int, MethodInfo>();
+            Dictionary<int, PropertyInfo> propertyCache = new Dictionary<int, PropertyInfo>();
             while (reader.Read())
             {
                 results.Add(reader.Read(type, propertyCache));

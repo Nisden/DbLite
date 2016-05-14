@@ -1,6 +1,7 @@
 ﻿namespace DbLite
 {
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Reflection;
@@ -25,6 +26,8 @@
     public class DbLiteModelInfo
     {
         public string Name { get; private set; }
+
+        public bool HasAutoIncrement { get; private set; }
 
         public IDictionary<string, DbLiteModelInfoColumn> Columns { get; private set; }
 
@@ -54,6 +57,8 @@
 
             // Change dictionary to read only
             Columns = new ReadOnlyDictionary<string, DbLiteModelInfoColumn>(columns);
+
+            HasAutoIncrement = Columns.Any(x => x.Value.AutoIncrementing);
         }
     }
 
@@ -65,10 +70,13 @@
 
         public bool Key { get; private set; }
 
+        public bool AutoIncrementing { get; private set; }
+
         public DbLiteModelInfoColumn(PropertyInfo property)
         {
             Name = property.GetCustomAttribute<AliasAttribute>()?.Name ?? property.Name;
             Key = property.GetCustomAttribute<KeyAttribute>() != null;
+            AutoIncrementing = property.GetCustomAttribute<AutoIncrementAttribute>() != null;
             Property = property;
         }
 

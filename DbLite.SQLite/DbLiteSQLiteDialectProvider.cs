@@ -18,6 +18,14 @@
             }
         }
 
+        public override string RetriveLastIdentity
+        {
+            get
+            {
+                return ";SELECT last_insert_rowid()";
+            }
+        }
+
         public override string EscapeColumn(string columnName)
         {
             return Escape(columnName);
