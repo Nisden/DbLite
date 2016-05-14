@@ -62,6 +62,12 @@ namespace DbLite.Test.MSSQL
                     command.CommandText = @"CREATE TABLE MultiKeyTable ( Id1 INT, Id2 NVARCHAR(MAX), Value NVARCHAR(MAX))";
                     command.ExecuteNonQuery();
 
+                    command.CommandText = @"CREATE TABLE AutoIncrementingTable (
+                                           	Id INT PRIMARY KEY IDENTITY,
+                                           	Value NVARCHAR(MAX)
+                                           )";
+                    command.ExecuteNonQuery();
+
                     // Insert data
                     var items = Enumerable.Range(1, 100).Select(x => new SimpleTable
                     {

@@ -68,6 +68,8 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="DataReaderTests.cs" />
     <Compile Include="DeleteTests.cs" />
+    <Compile Include="InsertTests.cs" />
+    <Compile Include="MSSQL\MSSQLInsertTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryTests.cs" />
     <Compile Include="ReadmeTests.cs" />
@@ -82,10 +84,12 @@
     <Compile Include="SQLLite\SQLiteDatabaseFixture.cs" />
     <Compile Include="SQLLite\SQLiteDataReaderTests.cs" />
     <Compile Include="SQLLite\SQLiteDeleteTests.cs" />
+    <Compile Include="SQLLite\SQLiteInsertTests.cs" />
     <Compile Include="SQLLite\SQLiteQueryTests.cs" />
     <Compile Include="SQLLite\SQLiteReadmeTests.cs" />
     <Compile Include="SQLLite\SQLiteSelectTests.cs" />
     <Compile Include="SQLLite\SQLiteUpdateTests.cs" />
+    <Compile Include="Tables\AutoIncrementingTable.cs" />
     <Compile Include="Tables\MultiKeyTable.cs" />
     <Compile Include="Tables\SimpleTable.cs" />
     <Compile Include="UpdateTests.cs" />
