@@ -44,7 +44,7 @@
             foreach (var instanceName in Options.InstanceNames)
             {
                 // Open connection and get the dialect
-                using (var connection = Options.OpenConnection())
+                using (var connection = Options.DestinationConnection())
                 {
                     var dialectProvider = connection.GetDialectProvider();
 
@@ -55,18 +55,22 @@
                         var record = connection.Single<TTable>($@"SELECT TOP 1 {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)}
                                                                    FROM {dialectProvider.EscapeTable(modelInfo.Name)}
                                                                    WHERE {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.Source)].Name)} == @source
-                                                                   ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC", 
+                                                                   ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC",
                                                                    new { source = instanceName });
 
                         lastReplicated.Add(instanceName, record.LastUpdated);
                     }
 
                     // Lets get the newest records that needs to be synchronized
-                    var records = connection.Select<TTable>($@"SELECT TOP {BatchSize} {string.Join(", ", modelInfo.Columns.Values.Select(x => dialectProvider.EscapeColumn(x.Name)))}
-                                                               FROM {dialectProvider.EscapeTable(modelInfo.Name)}
-                                                               WHERE {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.Source)].Name)} > @last
-                                                               ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC",
-                                                               new { last = lastReplicated[instanceName] });
+                    List<TTable> records;
+                    using (var sourceConnection = Options.SourceConnection(instanceName))
+                    {
+                        records = sourceConnection.Select<TTable>($@"SELECT TOP {BatchSize} {string.Join(", ", modelInfo.Columns.Values.Select(x => dialectProvider.EscapeColumn(x.Name)))}
+                                                                    FROM {dialectProvider.EscapeTable(modelInfo.Name)}
+                                                                    WHERE {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.Source)].Name)} > @last
+                                                                    ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC",
+                                                                    new { last = lastReplicated[instanceName] });
+                    }
 
                     if (records.Count > 0)
                     {

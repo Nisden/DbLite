@@ -11,7 +11,9 @@
     {
         public string[] InstanceNames { get; set; }
 
-        public Func<IDbConnection> OpenConnection { get; set; }
+        public Func<IDbConnection> DestinationConnection { get; set; }
+
+        public Func<string, IDbConnection> SourceConnection { get; set; }
 
         /// <summary>
         /// Validates the options defined.
@@ -22,8 +24,11 @@
             if (InstanceNames == null || InstanceNames.Length == 0)
                 throw new InvalidReplicationOptionException("Replication Options must have one or more InstanceNames defined");
 
-            if (OpenConnection == null)
-                throw new InvalidReplicationOptionException("OpenConnection must be defined");
+            if (DestinationConnection == null)
+                throw new InvalidReplicationOptionException("DestinationConnection must be defined");
+
+            if (SourceConnection == null)
+                throw new InvalidReplicationOptionException("SourceConnection must be defined");
         }
     }
 }
