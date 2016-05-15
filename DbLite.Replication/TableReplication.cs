@@ -10,6 +10,8 @@
     {
         public ReplicationOptions Options { get; private set; }
 
+        public int BatchSize { get; set; } = 5000;
+
         /// <exception cref="InvalidReplicationOptionException">If one or more options are incorrect</exception>
         public TableReplication(ReplicationOptions options)
         {
@@ -21,7 +23,7 @@
             Options = options;
         }
 
-        public abstract void Run();
+        public abstract ReplicationResult Run();
     }
 
     public sealed class TableReplication<TTable> : TableReplication
@@ -33,8 +35,9 @@
         public TableReplication(ReplicationOptions options) : base(options)
         { }
 
-        public override void Run()
+        public override ReplicationResult Run()
         {
+            var result = new ReplicationResult();
             var modelInfo = DbLiteModelInfo<TTable>.Instance;
 
             // Loop instances
@@ -49,10 +52,45 @@
                     if (!lastReplicated.ContainsKey(instanceName))
                     {
                         // If not, lets get current highest
-                        var records = connection.Select<TTable>($"WHERE {modelInfo.Columns[nameof(IReplicatedTable.Source)].Name} == @source", new { source = instanceName });
+                        var record = connection.Single<TTable>($@"SELECT TOP 1 {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)}
+                                                                   FROM {dialectProvider.EscapeTable(modelInfo.Name)}
+                                                                   WHERE {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.Source)].Name)} == @source
+                                                                   ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC", 
+                                                                   new { source = instanceName });
+
+                        lastReplicated.Add(instanceName, record.LastUpdated);
+                    }
+
+                    // Lets get the newest records that needs to be synchronized
+                    var records = connection.Select<TTable>($@"SELECT TOP {BatchSize} {string.Join(", ", modelInfo.Columns.Values.Select(x => dialectProvider.EscapeColumn(x.Name)))}
+                                                               FROM {dialectProvider.EscapeTable(modelInfo.Name)}
+                                                               WHERE {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.Source)].Name)} > @last
+                                                               ORDER BY {dialectProvider.EscapeColumn(modelInfo.Columns[nameof(IReplicatedTable.LastUpdated)].Name)} DESC",
+                                                               new { last = lastReplicated[instanceName] });
+
+                    if (records.Count > 0)
+                    {
+                        // Update records
+                        foreach (var record in records)
+                        {
+                            try
+                            {
+                                connection.Update(record);
+                                result.RecordsUpdated++;
+                            }
+                            catch (NoRecordsAffectException)
+                            {
+                                connection.Insert(record);
+                                result.RecordsAdded++;
+                            }
+                        }
+
+                        lastReplicated[instanceName] = records.Last().LastUpdated;
                     }
                 }
             }
+
+            return result;
         }
     }
 }
