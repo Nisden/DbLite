@@ -7,24 +7,29 @@ using System.Text;
 using System.Threading.Tasks;
 using DbLite;
 using Xunit;
+using System.IO;
 
 namespace DbLite.Test.SQLLite
 {
     public class SQLiteDatabaseFixture : DatabaseFixture<System.Data.SQLite.SQLiteConnection>, IDisposable
     {
-        private static string fileName;
+        private Dictionary<string, string> namedDatabases = new Dictionary<string, string>();
 
-        public override SQLiteConnection Open()
+        public override SQLiteConnection Open(string namedDatabase = "Default")
         {
-            var connection = new SQLiteConnection($"Data Source={fileName};Version=3;");
+            if (!namedDatabases.ContainsKey(namedDatabase))
+                SetupDatabase(namedDatabase);
+
+            var connection = new SQLiteConnection($"Data Source={namedDatabases[namedDatabase]};Version=3;");
             return connection.OpenAndReturn();
         }
 
-        protected override void SetupDatabase()
+        protected override void SetupDatabase(string databaseName)
         {
-            fileName = System.IO.Path.GetTempFileName();
+            string fileName = System.IO.Path.GetTempFileName();
+            namedDatabases.Add(databaseName, fileName);
 
-            using (var connection = Open())
+            using (var connection = Open(databaseName))
             {
                 using (var command = connection.CreateCommand())
                 {
@@ -63,11 +68,12 @@ namespace DbLite.Test.SQLLite
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            if (fileName != null && System.IO.File.Exists(fileName))
+            foreach (var database in namedDatabases.Values)
             {
-                System.IO.File.Delete(fileName);
+                if (File.Exists(database))
+                    File.Delete(database);
             }
         }
     }

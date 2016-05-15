@@ -8,16 +8,19 @@
     using System.Threading.Tasks;
     using Xunit;
 
-    public abstract class DatabaseFixture<TConnection>
+    public abstract class DatabaseFixture<TConnection> : IDisposable
         where TConnection : IDbConnection
     {
         public DatabaseFixture()
         {
-            SetupDatabase();
+            using (Open())
+            { }
         }
 
-        protected abstract void SetupDatabase();
+        protected abstract void SetupDatabase(string databaseName);
 
-        public abstract TConnection Open();
+        public abstract TConnection Open(string namedDatabase = "Default");
+
+        public abstract void Dispose();
     }
 }

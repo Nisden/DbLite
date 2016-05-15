@@ -13,10 +13,15 @@ namespace DbLite.Test.MSSQL
 {
     public class MSSQLDatabaseFixture : DatabaseFixture<System.Data.SqlClient.SqlConnection>
     {
-        public override SqlConnection Open()
+        public List<string> namedDatabases = new List<string>();
+
+        public override SqlConnection Open(string namedDatabase = "Default")
         {
+            if (!namedDatabases.Contains(namedDatabase))
+                SetupDatabase(namedDatabase);
+
             SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
-            connectionStringBuilder.InitialCatalog = "DbLiteTest";
+            connectionStringBuilder.InitialCatalog = "DbLiteTest_" + namedDatabase;
             connectionStringBuilder.DataSource = ".";
             connectionStringBuilder.IntegratedSecurity = true;
 
@@ -26,7 +31,7 @@ namespace DbLite.Test.MSSQL
             return connection;
         }
 
-        protected override void SetupDatabase()
+        protected override void SetupDatabase(string databaseName)
         {
             SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
             connectionStringBuilder.InitialCatalog = "master";
@@ -39,14 +44,10 @@ namespace DbLite.Test.MSSQL
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = @"IF EXISTS(SELECT * FROM sys.databases WHERE [name] = 'DbLiteTest')
-                                        BEGIN
-                                            DROP DATABASE DbLiteTest
-                                        END
-                                        
-                                        CREATE DATABASE DbLiteTest
-                                        SELECT 'DbLiteTest'";
-                    connection.ChangeDatabase((string)command.ExecuteScalar());
+                    command.CommandText = $@"CREATE DATABASE DbLiteTest_{databaseName}";
+                    command.ExecuteNonQuery();
+
+                    connection.ChangeDatabase("DbLiteTest_" + databaseName);
                 }
 
                 using (var command = connection.CreateCommand())
@@ -85,6 +86,31 @@ namespace DbLite.Test.MSSQL
                         Id2 = "Hello",
                         Value = "my name is Mr. X"
                     });
+                }
+            }
+
+            namedDatabases.Add(databaseName);
+        }
+
+        public override void Dispose()
+        {
+            SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
+            connectionStringBuilder.InitialCatalog = "master";
+            connectionStringBuilder.DataSource = ".";
+            connectionStringBuilder.IntegratedSecurity = true;
+
+            using (var connection = new SqlConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    foreach (var databaseName in namedDatabases)
+                    {
+                        command.CommandText = $@"ALTER DATABASE DbLiteTest_{databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+                                                 DROP DATABASE DbLiteTest_{databaseName}";
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
