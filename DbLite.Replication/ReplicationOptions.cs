@@ -13,7 +13,7 @@
 
         public Func<IDbConnection> DestinationConnection { get; set; }
 
-        public Func<string, IDbConnection> SourceConnection { get; set; }
+        public int BatchSize { get; set; } = 5000;
 
         /// <summary>
         /// Validates the options defined.
@@ -27,8 +27,8 @@
             if (DestinationConnection == null)
                 throw new InvalidReplicationOptionException("DestinationConnection must be defined");
 
-            if (SourceConnection == null)
-                throw new InvalidReplicationOptionException("SourceConnection must be defined");
+            if (BatchSize <= 0)
+                throw new InvalidReplicationOptionException("BatchSize must be larger then 0");
         }
     }
 }

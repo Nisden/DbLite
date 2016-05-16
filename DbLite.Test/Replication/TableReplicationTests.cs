@@ -32,10 +32,11 @@
         [InlineData(10)]
         public void ReplicateInserts(int records)
         {
+            // Syncs 10 records from Db2 to Db1
             var newRecords = Enumerable.Range(0, 10).Select(x => new ReplicationTestTable()
             {
                 Id = Guid.NewGuid(),
-                Source = "Db1",
+                Source = "Db2",
                 LastUpdated = DateTime.UtcNow,
                 Value1 = "Test " + x,
                 Value3 = "Test " + x
@@ -43,18 +44,24 @@
 
             using (var db1 = Fixture.Open("Db1"))
             {
-                db1.Insert(newRecords);
-
                 using (var db2 = Fixture.Open("Db2"))
                 {
                     var replicator = new TableReplication<ReplicationTestTable>(new ReplicationOptions
                     {
                         DestinationConnection = () => Fixture.Open("Db1"),
-                        SourceConnection = (instaceName) => Fixture.Open(instaceName),
                         InstanceNames = new string[] { "Db1", "Db2" }
                     });
 
-                    var result = replicator.Run();
+                    // Dry run
+                    replicator.Run(db2);
+
+                    // Insert records
+                    db2.Insert(newRecords);
+
+                    // Sync records
+                    var result = replicator.Run(db2);
+
+                    // Check that records was synced
                     Assert.Equal(10, result.RecordsAdded);
                     Assert.Equal(0, result.RecordsUpdated);
                 }

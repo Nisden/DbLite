@@ -44,7 +44,12 @@ namespace DbLite.Test.MSSQL
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = $@"CREATE DATABASE DbLiteTest_{databaseName}";
+                    command.CommandText = $@"IF EXISTS (select * from sys.databases where name = 'DbLiteTest_{databaseName}')
+                                             BEGIN
+                                             	ALTER DATABASE DbLiteTest_{databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+                                             	DROP DATABASE DbLiteTest_{databaseName}
+                                             END
+                                             CREATE DATABASE DbLiteTest_{databaseName}";
                     command.ExecuteNonQuery();
 
                     connection.ChangeDatabase("DbLiteTest_" + databaseName);
@@ -67,6 +72,16 @@ namespace DbLite.Test.MSSQL
                                            	Id INT PRIMARY KEY IDENTITY,
                                            	Value NVARCHAR(MAX)
                                            )";
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = @"CREATE TABLE ReplicationTestTable (
+                                           	Id uniqueidentifier PRIMARY KEY,
+                                           	Value1 NVARCHAR(MAX),
+                                            Value2 NVARCHAR(MAX),
+                                            Value3 NVARCHAR(MAX),
+                                            Deleted BIT NOT NULL,
+                                            LastUpdated DATETIME NOT NULL,
+                                            Source NVARCHAR(MAX) NOT NULL)";
                     command.ExecuteNonQuery();
 
                     // Insert data
