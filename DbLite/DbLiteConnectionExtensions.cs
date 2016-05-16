@@ -26,6 +26,7 @@
 
         /// <returns>-1 if more than one items is inserted or the model does not have a AutoIncrement column, otherwise the last inserted id.</returns>
         public static long Insert<TModel>(this IDbConnection connection, params TModel[] items)
+            where TModel : class
         {
             DbLiteDialectProvider dialectProvider = DbLiteDialectProviderFactory.GetProvider(connection);
             DbLiteModelInfo modelInfo = DbLiteModelInfo<TModel>.Instance;
@@ -137,6 +138,7 @@
         /// <exception cref="InvalidOperationException">If no columns on the <see cref="item"/> has the <see cref="KeyAttribute"/></exception>
         /// <exception cref="NoRecordsAffectException">If the update affected not rows</exception>
         public static void Update<TModel>(this IDbConnection connection, TModel item)
+            where TModel : class
         {
             if (connection == null)
                 throw new ArgumentNullException(nameof(connection));
@@ -178,6 +180,7 @@
         #region Delete
 
         public static void Delete<TModel>(this IDbConnection connection, TModel item)
+            where TModel : class
         {
             if (connection == null)
                 throw new ArgumentNullException(nameof(connection));
