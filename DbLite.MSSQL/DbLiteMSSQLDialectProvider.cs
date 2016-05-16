@@ -34,6 +34,16 @@
             return new DbLiteQueryProviderCommon(connection);
         }
 
+        public override void SetParameterDataType(IDbDataParameter parameter, object value)
+        {
+            base.SetParameterDataType(parameter, value);
+
+            if (value is Guid)
+            {
+                ((SqlParameter)parameter).SqlDbType = SqlDbType.UniqueIdentifier;
+            }
+        }
+
         public override string EscapeColumn(string columnName)
         {
             return Escape(columnName);

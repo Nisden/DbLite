@@ -66,6 +66,10 @@
             {
                 parameter.DbType = DbType.Decimal;
             }
+            else if (value is Guid)
+            {
+                parameter.DbType = DbType.Binary;
+            }
             else
             {
                 throw new NotImplementedException($"DataType for {value.GetType().FullName} is not set");
