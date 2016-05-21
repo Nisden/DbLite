@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DbLite.SQLite")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SQLite Provider for DbLite")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Nisd")]
 [assembly: AssemblyProduct("DbLite.SQLite")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
