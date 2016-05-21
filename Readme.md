@@ -1,5 +1,7 @@
 ﻿# DbLite
 
+[![Build status](https://ci.appveyor.com/api/projects/status/bw0rglovw5508yj1/branch/master?svg=true)](https://ci.appveyor.com/project/NsdWorkBook/dblite/branch/master)
+
 A simple micro ORM
 
 # Sample
