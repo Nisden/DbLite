@@ -13,12 +13,12 @@ namespace DbLite.Test.MSSQL
 {
     public class MSSQLDatabaseFixture : DatabaseFixture<System.Data.SqlClient.SqlConnection>
     {
+        private static string baseConnectionString = Environment.GetEnvironmentVariable("MSSQLConnectionString") ?? "Server=.;Database=master;Trusted_Connection=True;";
+
         public override SqlConnection Open()
         {
-            SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
+            SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder(baseConnectionString);
             connectionStringBuilder.InitialCatalog = "DbLiteTest";
-            connectionStringBuilder.DataSource = ".";
-            connectionStringBuilder.IntegratedSecurity = true;
 
             var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
             connection.Open();
@@ -28,10 +28,8 @@ namespace DbLite.Test.MSSQL
 
         protected override void SetupDatabase()
         {
-            SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
+            SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder(baseConnectionString);
             connectionStringBuilder.InitialCatalog = "master";
-            connectionStringBuilder.DataSource = ".";
-            connectionStringBuilder.IntegratedSecurity = true;
 
             using (var connection = new SqlConnection(connectionStringBuilder.ConnectionString))
             {
