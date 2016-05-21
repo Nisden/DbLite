@@ -1,4 +1,4 @@
-﻿# DbLite
+# DbLite
 
 [![Build status](https://ci.appveyor.com/api/projects/status/bw0rglovw5508yj1/branch/master?svg=true)](https://ci.appveyor.com/project/NsdWorkBook/dblite/branch/master)
 
@@ -32,11 +32,16 @@ using (new System.Transactions.TransactionScope())
 }
 ```
 
+# Packages
+* [![NuGet](https://img.shields.io/nuget/v/DbLite.svg?maxAge=2592000)](https://www.nuget.org/packages/DbLite/) DbLite 
+* [![NuGet](https://img.shields.io/nuget/v/DbLite.MSSQL.svg?maxAge=2592000)](https://www.nuget.org/packages/DbLite.MSSQL/) DbLite.MSSQL
+* [![NuGet](https://img.shields.io/nuget/v/DbLite.SQLite.svg?maxAge=2592000)](https://www.nuget.org/packages/DbLite.SQLite/) DbLite.SQLite
+
 # Notes
 
 * Everything is parameterized, no inline variables
-* Currently there is only a dialect providers for SQLite and MSSQL
-* Test coverage is spotty at best
+* Currently there are only dialect providers for SQLite and MSSQL
+* Test coverage is spotty
 
 # Requirements
 
