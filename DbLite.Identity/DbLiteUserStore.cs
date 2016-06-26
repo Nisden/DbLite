@@ -92,21 +92,37 @@
             if (keyColumn == null)
                 throw new NoKeyException("The model does not have a column with the Key Attribute");
 
-            var user = Connection.Single<TUser>($"WHERE {keyColumn.Name} = @userId", new { userId = userId });
+            var user = Connection.Single<TUser>($"WHERE {Connection.GetDialectProvider().EscapeColumn(keyColumn.Name)} = @userId", new { userId = userId });
             if (user == null)
                 throw new UserNotFoundException($"User with the Id {userId} was not found");
 
             return Task.FromResult(user);
         }
 
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="NoKeyException"></exception>
+        /// <exception cref="UserNotFoundException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
         public Task<TUser> FindByNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentNullException(nameof(userName));
+
+            var user = Connection.Single<TUser>($"WHERE {Connection.GetDialectProvider().EscapeColumn(DbLiteModelInfo<TUser>.Instance.Columns[nameof(User.UserName)].Name)} = @userName", new { userName });
+            if (user == null)
+                throw new UserNotFoundException($"User with the name {userName} was not found");
+
+            return Task.FromResult(user);
         }
 
         public Task<IList<string>> GetRolesAsync(TUser user)
         {
-            throw new NotImplementedException();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            var roles = Connection.Select<UserRole<TKey>>("WHERE UserId = @userId", new { userId = user.Id });
+
+            return Task.FromResult((IList<string>)roles.Select(x => x.Name).ToList());
         }
 
         public Task<bool> IsInRoleAsync(TUser user, string roleName)

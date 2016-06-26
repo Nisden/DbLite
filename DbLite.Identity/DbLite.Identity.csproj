@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="DbLiteUserStore.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserRole.cs" />
     <Compile Include="NoKeyException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserNotFoundException.cs" />
